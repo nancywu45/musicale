@@ -1,0 +1,56 @@
+<div class="h-[500px] flex flex-col mt-10">
+  <div class="flex items-center ml-9">
+    <i class="fa-solid fa-compact-disc text-neutral-200 fa-4x"></i>
+    {% if 'user_name' not in session %}
+    <span
+      ><a
+        class="ml-4 text-2xl text-neutral-200 font-poppins font-bold cursor-pointer"
+        href="{{ url_for('home_bp.home') }}"
+        >Musicale</a
+      ></span
+    >
+    {% else %}
+    <span
+      ><a
+        class="ml-4 text-2xl text-neutral-200 font-poppins font-bold cursor-pointer"
+        href="{{ url_for('tracks_bp.tracks_list') }}"
+        >Musicale</a
+      ></span
+    >
+    {% endif %}
+  </div>
+  <div class="mt-16 ml-16 flex flex-col h-full">
+    <!-- <i class="fa-regular fa-circle-user text-neutral-200 fa-4x"></i> -->
+    <div class="h-full flex flex-col justify-around">
+      <div class="flex flex-col">
+        {% if 'user_name' in session %}
+        <div>
+          <a
+            href="{{ url_for('playlist_bp.playlist') }}"
+            class="text-neutral-200 font-poppins cursor-pointer"
+            >Playlists</a
+          >
+          <!-- <p class="text-neutral-200 font-poppins mt-8">Favourites</p> -->
+          <!-- <p class="text-neutral-200 font-poppins mt-8">My Reviews</p> -->
+        </div>
+        <a
+          href="{{ url_for('authentication_bp.logout') }}"
+          class="text-neutral-200 font-poppins cursor-pointer mt-20"
+          >Log out</a
+        >
+        {% else %}
+        <a
+          href="{{ url_for('authentication_bp.register') }}"
+          class="text-neutral-200 font-poppins cursor-pointer"
+          >Register</a
+        >
+        <a
+          href="{{ url_for('authentication_bp.login') }}"
+          class="text-neutral-200 font-poppins mt-4 cursor-pointer"
+          >Login</a
+        >
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

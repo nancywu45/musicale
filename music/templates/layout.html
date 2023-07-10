@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Musicale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  <!-- tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
+
+  <!-- font awesome -->
+  <script src="https://kit.fontawesome.com/bff52c5764.js" crossorigin="anonymous"></script>
+
+  <!-- Google font -->
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+  <!-- tailwind config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="bg-neutral-800 min-h-screen min-w-full grid grid-cols-[20%_80%]">
+    {% include 'sidenav.html' %}
+      <div class="w-full">
+        {% block content %}{% endblock %}
+      </div>
+</body>
+
+</html>

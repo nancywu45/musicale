@@ -1,0 +1,10 @@
+pytest
+Flask==2.0.3
+wtforms
+flask_wtf
+password-validator
+flake8
+mypy
+black
+python-dotenv
+sqlalchemy

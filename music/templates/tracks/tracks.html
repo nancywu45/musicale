@@ -1,0 +1,153 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="w-4/5 mt-10">
+  <form class="h-16 items-center flex w-full">
+    <input class="rounded-3xl w-full bg-neutral-800 border-2 border-neutral-200 text-neutral-200 focus:ring-neutral-400 focus:border-neutral-400 transition delay-150" type="text" id="search"  placeholder="Search for track or album.." title="Type in a name of track">
+    <div class="flex flex-col ml-4">
+      <h2 class="mb-2 text-base text-neutral-200">Search by:</h2>
+      <div class="flex">
+        <button class="cursor-pointer text-neutral-800
+      bg-neutral-200 px-4 py-2 rounded-3xl  hover:bg-neutral-300
+      transition delay-15" type="button" onclick="searchTrack()">Tracks</button>
+        <button class="w-fit cursor-pointer text-neutral-800
+      bg-neutral-200 px-4 py-2 rounded-3xl ml-4 hover:bg-neutral-300
+      transition delay-15" type="button" onclick="searchAlbum()">Album</button>
+      <button class="w-fit cursor-pointer text-neutral-800
+      bg-neutral-200 px-4 py-2 rounded-3xl ml-4 hover:bg-neutral-300
+      transition delay-15" type="button" onclick="searchArtist()">Artist</button>
+      </div>
+    </div>
+  </form>
+  <!-- genres -->
+  <h2 class="text-neutral-200 text-base">Filter by Genres</h2>
+  <div class="flex w-full overflow-x-auto mt-4 items-center">
+    {% for genre in genres %}
+        {% if selected_genre_id == genre.genre_id  %}
+          <button onclick="resetGenres()" class="bg-neutral-400 text-neutral-800 py-1 px-2 rounded-2xl h-fit mx-4 cursor-pointer">
+            {{ genre.name }}
+          </button>
+        {% else %}
+          <button onclick="genreSelected('{{ genre.genre_id }}')" class="bg-neutral-200 text-neutral-800 py-1 px-2 rounded-2xl h-fit mx-4 cursor-pointer">
+            {{ genre.name }}
+          </button>
+        {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+
+<div class="mb-8 mt-8">
+  <h1 class="text-neutral-200 text-3xl font-poppins mb-2">All Tracks</h1>
+  <form class="flex items-center">
+    {{ form.number_of_tracks.label(class="text-neutral-200") }} {{
+    form.number_of_tracks(class="rounded-3xl bg-neutral-800 border-2
+    border-neutral-200 text-neutral-200 focus:ring-neutral-400
+    focus:border-neutral-400 transition delay-150 ml-4") }} {% if
+    form.number_of_tracks.errors %}
+    <ul class="errors mt-4 text-neutral-200 text-sm">
+      {% for error in form.number_of_tracks.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} 
+    {{ form.submit(class="w-fit cursor-pointer text-neutral-800
+    bg-neutral-200 px-4 py-2 rounded-3xl h-10 ml-4 hover:bg-neutral-300
+    transition delay-150") }}
+  </form>
+</div>
+<div class="grid grid-cols-4 gap-16 overflow-y-auto w-[95%] mb-4">
+  {% for track in tracks %}
+  <div class="w-full track flex flex-col">
+    {% if track.track_image_url %}
+    <a href="{{ url_for('review_bp.review', track_id=track.track_id) }}">
+      <img src="{{ track.track_image_url }}" alt="" />
+    </a>
+    {% else %}
+    <a href="{{ url_for('review_bp.review', track_id=track.track_id) }}">
+      <div
+        class="w-full aspect-square flex justify-center items-center bg-slate-200"
+      >
+        <h2 class="text-neutral-800 text-2xl font-poppins">No Image</h2>
+      </div>
+     </a>
+    {% endif %}
+    <div class="flex mt-4 w-full justify-between">
+      <div class="flex flex-col">
+        <h3 class="text-neutral-200 font-poppins text-xs album-title">{{ track.album.title }}</h3>
+        <h2 class="text-neutral-200 font-poppins text-xl track-title">{{ track.title }}</h2>
+        <h4 class="text-neutral-200 font-poppins text-xs artist-name">
+          {{ track.artist.full_name }}
+        </h4>
+      </div>
+      <div class="bg-neutral-200 py-1 px-2 rounded-2xl h-fit">
+        <h2 class="text-neutral-800 text-md text-center">
+          {{ track.genres[0].name if track.genres[0] else None }}
+        </h2>
+      </div>
+    </div>
+    <a href="{{ url_for('tracks_bp.tracks_list', playlist_track_id=track.track_id) }}" class="w-fit cursor-pointer text-neutral-800
+    bg-neutral-200 mt-2 px-4 py-2 rounded-3xl h-10 ml-4 hover:bg-neutral-300
+    transition delay-150" >Add to playlist</a>
+  </div>
+  {% endfor %}
+</div>
+<script>
+    const genreSelected = (genreId) => {
+        if (window.location.href.includes('number_of_tracks') && window.location.href.includes('genre_id')) {
+            window.location.href = window.location.href.replace(/&genre_id=\d+/, `&genre_id=${genreId}`)
+        } else if (window.location.href.includes('number_of_tracks')) {
+            window.location.href = window.location.href + `&genre_id=${genreId}`
+        } else if (window.location.href.includes('genre_id')) {
+            window.location.href = window.location.href.replace(/genre_id=\d+/, `genre_id=${genreId}`)
+        } else {
+            window.location.href = window.location.href + `?genre_id=${genreId}`
+        } 
+    }
+
+    const resetGenres = () => {
+        if (window.location.href.includes('?genre_id')) {
+            window.location.href = window.location.href.replace(/\?genre_id=\d+/, '')
+        } else if (window.location.href.includes('&genre_id')) {
+            window.location.href = window.location.href.replace(/&genre_id=\d+/, '')
+        }
+    }
+
+    const searchTrack = () => {
+        const input = document.getElementById('search').value
+        const tracks = document.getElementsByClassName('track')
+        tracks.forEach(track => {
+            const title = track.getElementsByClassName('track-title')[0].innerText
+            if (title.toLowerCase().includes(input.toLowerCase())) {
+                track.style.display = 'block'
+            } else {
+                track.style.display = 'none'
+            }
+        })
+    }
+
+    const searchAlbum = () => {
+        const input = document.getElementById('search').value
+        const tracks = document.getElementsByClassName('track')
+        tracks.forEach(track => {
+            const title = track.getElementsByClassName('album-title')[0].innerText
+            if (title.toLowerCase().includes(input.toLowerCase())) {
+                track.style.display = 'block'
+            } else {
+                track.style.display = 'none'
+            }
+        })
+    }
+
+    const searchArtist = () => {
+        const input = document.getElementById('search').value
+        const tracks = document.getElementsByClassName('track')
+        tracks.forEach(track => {
+            const title = track.getElementsByClassName('artist-name')[0].innerText
+            if (title.toLowerCase().includes(input.toLowerCase())) {
+                track.style.display = 'block'
+            } else {
+                track.style.display = 'none'
+            }
+        })
+    }
+</script>
+{% endblock %}

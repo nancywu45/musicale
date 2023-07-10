@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="h-full w-full justify-center flex flex-col">
+  <h1 class=" text-neutral-200 text-2xl">Welcome to Musicale</h1>
+  {% if 'user_name' not in session %}
+  <p class="text-neutral-200 text-sm">Register <a href="{{ url_for('authentication_bp.register') }}"><span class="underline">here</span></a></p>
+  {% endif %}
+</div>
+{% endblock %}

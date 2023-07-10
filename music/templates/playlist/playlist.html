@@ -1,0 +1,39 @@
+{% extends 'layout.html' %} {% block content %}
+<h1 class="text-neutral-200 text-3xl mb-8 font-poppins mt-14">Your Playlist</h1>
+<div class="grid grid-cols-4 gap-16 overflow-y-auto w-[95%]">
+  {% for track in tracks %}
+  <div class="w-full track flex flex-col">
+    {% if track.track_image_url %}
+    <a href="{{ url_for('review_bp.review', track_id=track.track_id) }}">
+      <img src="{{ track.track_image_url }}" alt="" />
+    </a>
+    {% else %}
+    <a href="{{ url_for('review_bp.review', track_id=track.track_id) }}">
+      <div
+        class="w-full aspect-square flex justify-center items-center bg-slate-200"
+      >
+        <h2 class="text-neutral-800 text-2xl font-poppins">No Image</h2>
+      </div>
+     </a>
+    {% endif %}
+    <div class="flex mt-4 w-full justify-between">
+      <div class="flex flex-col">
+        <h3 class="text-neutral-200 font-poppins text-xs album-title">{{ track.album.title }}</h3>
+        <h2 class="text-neutral-200 font-poppins text-xl track-title">{{ track.title }}</h2>
+        <h4 class="text-neutral-200 font-poppins text-xs artist-name">
+          {{ track.artist.full_name }}
+        </h4>
+      </div>
+      <div class="bg-neutral-200 py-1 px-2 rounded-2xl h-fit">
+        <h2 class="text-neutral-800 text-md text-center">
+          {{ track.genres[0].name if track.genres[0] else None }}
+        </h2>
+      </div>
+    </div>
+    <a href="/playlist?delete_track_id={{ track.track_id }}" class="w-fit cursor-pointer text-neutral-800
+    bg-neutral-200 mt-2 px-2 py-1 rounded-3xl ml-4 hover:bg-neutral-300
+    transition delay-150" >Delete from Playlist</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

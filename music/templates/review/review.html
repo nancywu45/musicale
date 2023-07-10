@@ -1,0 +1,83 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="grid grid-cols-2 w-full h-full items-center justify-center">
+  <div class="flex">
+    <div class="flex flex-col justify-center w-full h-full">
+      {% if track.track_image_url %}
+
+      <img src="{{ track.track_image_url }}" alt="" />
+
+      {% else %}
+
+      <div class="w-full aspect-square flex justify-center items-center bg-slate-200">
+        <h2 class="text-neutral-800 text-2xl font-poppins">No Image</h2>
+      </div>
+
+      {% endif %}
+      <audio controls class="mt-3">
+        <source src="{{ track.track_audio_url }}" type="audio/mp3">
+      </audio>
+    </div>
+
+    <div class="flex flex-col w-full justify-center items-center ml-2">
+      <div>
+        <h3 class="text-neutral-200 font-poppins text-xl track-title mt-4">{{ track.title }}</h3>
+        <h4 class="text-neutral-200 font-poppins text-xs mt-4">{{ track.artist.full_name }}</h4>
+        <div class="bg-neutral-200 py-1 px-2 rounded-2xl h-fit mt-4">
+          <h2 class="text-neutral-800 text-md text-center">
+            {{ track.genres[0].name if track.genres[0] else None }}
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-2/3 w-11/12 flex flex-col">
+    <form method="POST" action="{{ handler_url }}" class="flex flex-col">
+      {{ form.csrf_token }}
+      <div class="flex flex-col">
+        {{ form.rating.label(class="text-neutral-200") }}
+        {{ form.rating(class="rounded-3xl w-1/2 bg-neutral-800 border-2
+        border-neutral-200 text-neutral-200 focus:ring-neutral-400
+        focus:border-neutral-400 transition delay-150")}}
+        {% if form.rating.errors %}
+        <ul class="errors mt-4 text-neutral-200 text-sm">
+          {% for error in form.rating.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      <div class="flex flex-col mt-4 mb-4">
+        {{ form.review_text.label(class="text-neutral-200") }}
+        {{ form.review_text(class="rounded-3xl w-1/2 bg-neutral-800 border-2
+        border-neutral-200 text-neutral-200 focus:ring-neutral-400
+        focus:border-neutral-400 transition delay-150")}}
+        {% if form.review_text.errors %}
+        <ul class="errors mt-4 text-neutral-200 text-sm">
+          {% for error in form.review_text.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {{ form.submit(class="w-fit cursor-pointer text-neutral-800
+      bg-neutral-200 px-4 py-2 rounded-3xl hover:bg-neutral-300
+      transition delay-150") }}
+    </form>
+    <div>
+      <h2 class="text-neutral-200 font-poppins text-xl mt-4">Reviews</h2>
+      <div class="flex max-h-72 flex-col overflow-y-auto">
+        {% for review in reviews %}
+        <div class="flex mt-4 items-center">
+          <i class="fa-regular fa-circle-user text-2xl text-neutral-200"></i>
+          <div class="flex flex-col ml-3">
+            <p class="text-neutral-200 font-poppins">Rating: {{ review.rating }}</p>
+            <p class="text-neutral-200 font-poppins">Comment:</p>
+            <p class="text-neutral-200 font-poppins">{{ review.review_text }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
